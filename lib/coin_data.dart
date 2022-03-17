@@ -1,5 +1,5 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 const List<String> currenciesList = [
   'AUD',
@@ -34,28 +34,25 @@ const coinAPIURL = 'rest.coinapi.io';
 const apiKey = '855916BE-0949-4221-B77B-764F0EDC87AE';
 
 class CoinData {
-  //3. Create the Asynchronous method getCoinData() that returns a Future (the price data).
-  Future getCoinData(SelectedCurrency) async {
-    //4. Create a url combining the coinAPIURL with the currencies we're interested, BTC to USD.
-    var requestURL = Uri.http('$coinAPIURL',
-        '/v1/exchangerate/BTC/USD?apikey=$apiKey', {'q': '{http}'});
-    //creating a GET request to the URL and wait for the response.
-    var response = await http.get(requestURL);
-    // http.Response response = await http.get(requestURL);
+  //Create the Asynchronous method getCoinData() that returns a Future (the price data).
+  Future getCoinData(String selectedCurrency) async {
+    Map<String, String> cryptoPrices = {};
+    for (String crypto in cryptoList) {
+      var requestURL = Uri.http(
+          '$coinAPIURL',
+          'v1/exchangerate/BTC/USD?apikey=$crypto/$selectedCurrency?apikey=$apiKey',
+          {'q': '{http}'});
 
-    //Check that the request was successful.
-    if (response.statusCode == 200) {
-      // Using the 'dart:convert' package to decode the JSON data that comes back from coinapi.io.
-      var decodedData = jsonDecode(response.body);
-      // Get the last price of bitcoin with the key 'last'.
-      var lastPrice = decodedData['rate'];
-      // Output the lastPrice from the method.
-      return lastPrice;
-    } else {
-      // Handle any errors that occur during the request.
-      print(response.statusCode);
-      //throw an error if our request fails.
-      throw 'Problem with the get request';
+      http.Response response = await http.get(requestURL);
+      if (response.statusCode == 200) {
+        var decodedData = jsonDecode(response.body);
+        double price = decodedData['rate'];
+        cryptoPrices[crypto] = price.toStringAsFixed(0);
+      } else {
+        print(response.statusCode);
+        throw 'Problem with the get request';
+      }
     }
+    return cryptoPrices;
   }
 }
