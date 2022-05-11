@@ -2,6 +2,9 @@
 
 A new Flutter project.
 
+![Screenshot del Projecto BitcoinTickers](https://user-images.githubusercontent.com/77897104/167878995-47c88ac8-7b07-46e9-bd78-e8781d9d306e.png)
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
